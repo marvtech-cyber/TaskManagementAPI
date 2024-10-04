@@ -24,11 +24,11 @@ class TaskCreateAPIView(APIView):
         if serializer.is_valid():
             # Save the serializer data and set the user to the current user
             serializer.save(user=self.request.user)
-            # Return a response with the serialized data and a 201 status code 
+            # Return a response with the serialized data and a 201 status code
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         # If the serializer is not valid , return a response with the error data and 400 status code
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 # Class based view for listing all tasks
 class TaskListAPIView(ListAPIView):
@@ -40,7 +40,7 @@ class TaskListAPIView(ListAPIView):
     def get_queryset(self):
         # Return a queryset of tasks that belong to the current user
         return Task.objects.filter(user=self.request.user)
-    
+
     # Method to handle GET requests
     def get(self, request, *args, **kwargs):
         # get queryset for this view
@@ -50,7 +50,7 @@ class TaskListAPIView(ListAPIView):
         # Return a response with the serialized data
         return Response(serializer.data)
 
-# Class based view for retrieving, updating and deleting tasks    
+# Class based view for retrieving, updating and deleting tasks
 class TaskDetailAPIView(RetrieveUpdateDestroyAPIView):
     # Specify the serializer and permission classesto be used for this view
     serializer_class = TaskSerializer
@@ -61,7 +61,7 @@ class TaskDetailAPIView(RetrieveUpdateDestroyAPIView):
     # Method to get the queryset for this view
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)
-    
+
     # Method to handle PUT requests
     def put(self, request, *args, **kwargs):
         # Get the task instance for this view
@@ -80,7 +80,7 @@ class TaskDetailAPIView(RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         # If the serializer is not valid, return response with the error data and 400 status code
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     # Method to handle DELETE requests
     def delete(self, request, *args, **kwargs):
         # Retrieve task instance for this view
@@ -91,7 +91,7 @@ class TaskDetailAPIView(RetrieveUpdateDestroyAPIView):
         # Delete the task instance an return a 204 status code
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-# Class based view for completing tasks    
+# Class based view for completing tasks
 class TaskCompleteAPIView(APIView):
     # permission classes used in this view
     permission_classes = [IsTaskOwner]
@@ -105,7 +105,7 @@ class TaskCompleteAPIView(APIView):
         # Check if the task belongs to the current user, if not return error and 403 status code in response
         if task.user != request.user:
             return Response({'error': 'You do not have permission to complete this task'}, status=status.HTTP_403_FORBIDDEN)
-        
+
         # Set the task status to 'Completed' and the completed at date to the current date and time
         task.status = 'Completed'
         task.completed_at = datetime.datetime.now()
